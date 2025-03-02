@@ -20,9 +20,11 @@ jobs:
           python model.py
           
       - name: 'Create CML report'
-        uses: iterative/cml-action@v1
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
+        uses: iterative/setup-cml@v1
+        
+      - name: 'Generate CML report'
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "## Model Metrics" > report.md
           cat metrics.txt >> report.md
