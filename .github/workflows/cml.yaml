@@ -1,5 +1,11 @@
 name: mlops-example-tensorflow-regression
 on: [push]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
 jobs:
   run:
     runs-on: ubuntu-latest
@@ -19,7 +25,7 @@ jobs:
         run: |
           python model.py
           
-      - name: 'Create CML report'
+      - name: 'Setup CML'
         uses: iterative/setup-cml@v1
         
       - name: 'Generate CML report'
@@ -32,5 +38,8 @@ jobs:
           echo -e "\n## Model Performance" >> report.md
           echo "Model performance metrics are on the plot below." >> report.md
           
-          cml-publish model_results.png --md >> report.md
-          cml-send-comment report.md
+          # Use inline image syntax
+          echo "![](./model_results.png)" >> report.md
+          
+          # Use newer command
+          cml comment create report.md
