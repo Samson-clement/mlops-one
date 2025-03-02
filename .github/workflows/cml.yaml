@@ -1,5 +1,11 @@
 name: mlops-example-tensorflow-regression
 on: [push]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
 jobs:
   run:
     runs-on: ubuntu-latest
@@ -11,23 +17,29 @@ jobs:
         with:
           python-version: '3.8'
           
-      - name: Install CML and dependencies
+      - name: Install dependencies
         run: |
           pip install -r requirements.txt
-          pip install dvc==2.58.2 dvc-cml==0.9.3 
           
       - name: 'Train my model'
-        env:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Your ML workflow goes here
           python model.py
           
+      - name: 'Setup CML'
+        uses: iterative/setup-cml@v1
+        
+      - name: 'Generate CML report'
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
           echo "## Model Metrics" > report.md
           cat metrics.txt >> report.md
           
           echo -e "\n## Model Performance" >> report.md
           echo "Model performance metrics are on the plot below." >> report.md
           
-          cml-publish model_results.png --md >> report.md
-          cml-send-comment report.md
+          # Use inline image syntax
+          echo "![](./model_results.png)" >> report.md
+          
+          # Use newer command
+          cml comment create report.md
