@@ -71,7 +71,7 @@ model.compile(loss=tf.keras.losses.mae,
               metrics=['mae'])
 
 # Fit the model
-model.fit(X_train, y_train, epochs=100)
+model.fit(X_train, y_train, epochs=99)
 
 # Make and plot predictions for model_1
 y_preds = model.predict(X_test)
