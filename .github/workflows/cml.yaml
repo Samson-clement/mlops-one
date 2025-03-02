@@ -1,11 +1,6 @@
 name: mlops-example-tensorflow-regression
 on: [push]
 
-permissions:
-  contents: read
-  pull-requests: write
-  issues: write
-
 jobs:
   run:
     runs-on: ubuntu-latest
@@ -30,7 +25,7 @@ jobs:
         
       - name: 'Generate CML report'
         env:
-          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO_TOKEN: ${{ secrets.PAT_TOKEN }}  # Use your PAT instead of GITHUB_TOKEN
         run: |
           echo "## Model Metrics" > report.md
           cat metrics.txt >> report.md
@@ -38,8 +33,6 @@ jobs:
           echo -e "\n## Model Performance" >> report.md
           echo "Model performance metrics are on the plot below." >> report.md
           
-          # Use inline image syntax
           echo "![](./model_results.png)" >> report.md
           
-          # Use newer command
           cml comment create report.md
